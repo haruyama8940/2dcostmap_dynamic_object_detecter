@@ -15,7 +15,6 @@ void nav_callback(const nav_msgs::OccupancyGrid& msg)
     vector<int8_t> nav_old;
     
     if (nav_flag){
-        nav_new = msg.data;
         nav_old = msg.data;
         nav_flag = false;
     }
