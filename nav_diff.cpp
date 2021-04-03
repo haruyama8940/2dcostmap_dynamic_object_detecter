@@ -18,13 +18,13 @@ void nav_callback(const nav_msgs::OccupancyGrid& msg)
     
     if (nav_flag){
         nav_old = msg.data;
-        nav_flag =false
+        nav_flag =false;
     }
-    else {
+    else if(!nav_flag) {
         for (int n = 0; n < nav_new.size(); n++){//ひとつの差
             auto diff += nav_new[n]-nav_old[n];
 
-            }
+        }
     //if(diff==){
         
     //}
