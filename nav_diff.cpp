@@ -5,7 +5,8 @@
 #include <numeric>
 
 using std::
-void nav_callback(msg){//callback関数
+void nav_callback(msg)
+{//callback関数
     
     int sum_new, sum_old;//新旧合計
     //float avg_new, avg_old;
