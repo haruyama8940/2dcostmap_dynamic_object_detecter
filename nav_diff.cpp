@@ -10,21 +10,27 @@ void nav_callback(const nav_msgs::OccupancyGrid& msg)
 {//callback関数
     
     int sum_new, sum_old;//新旧合計
-    bool nav_flag;
+    bool nav_flag=true;
+    
     //float avg_new, avg_old;
-    vector<int> nav_new{msg.data};
+    vector<int> nav_new;
     vector<int> nav_old;
-     
-    for (int n = 0; n < nav_new.size(); n++){//ひとつの差
-        auto diff += nav_new[n]-nav_old[n];
-
+    
+    if (nav_flag==true){
+        nav_old = msg.data;
+        nav_flag =false
     }
+    else {
+        for (int n = 0; n < nav_new.size(); n++){//ひとつの差
+            auto diff += nav_new[n]-nav_old[n];
+
+            }
     //if(diff==){
         
     //}
     nav_old = nav_new;//内容の代入vectorならできるらしい
     //std::cout<<"diff"<<"\n";
-
+    }
     /*平均
     avg_new = std::accumulate(nav_new.begin(),nav_new.end(), 0); 
     auto diff= avg_new - avg_old
