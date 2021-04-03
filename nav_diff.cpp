@@ -10,12 +10,13 @@ void nav_callback(const nav_msgs::OccupancyGrid& msg)
 {//callback関数
     
     int sum_new, sum_old;//新旧合計
+    bool nav_flag;
     //float avg_new, avg_old;
     vector<int> nav_new{msg.data};
     vector<int> nav_old;
-
+     
     for (int n = 0; n < nav_new.size(); n++){//ひとつの差
-        auto diff+ = nav_new[n]-nav_old[n];
+        auto diff += nav_new[n]-nav_old[n];
 
     }
     //if(diff==){
