@@ -2,9 +2,6 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <map_msgs/OccupancyGridUpdate.h>
 
-#include <vector>
-#include <numeric>
-
 using namespace::std;
 
 void nav_callback(const nav_msgs::OccupancyGridUpdateConstPtr& msg)
