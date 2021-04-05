@@ -4,7 +4,7 @@
 
 using namespace::std;
 
-void nav_callback(const nav_msgs::OccupancyGridUpdateConstPtr& msg)
+void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
 {//callback関数
 
     bool nav_flag=true;
