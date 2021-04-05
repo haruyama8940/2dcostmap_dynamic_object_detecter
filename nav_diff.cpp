@@ -7,16 +7,16 @@ using namespace::std;
 void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
 {//callback関数
 
-    bool nav_flag=true;
+    static bool nav_flag=true;
     int i, n = 0;
     static int cnt_old, cnt_new = 0;
-    
-    cout << msg->data.size() << "\n";
+
+    // cout << msg->data.size() << "\n";
 
     if (nav_flag){
         for (i=0;i<msg->data.size();++i){
 
-            if (msg->data[i]!= NULL){
+            if (msg->data[i] == '\0'){
                 cnt_old++;
                 //nav_old[i] = 0;
             }   
@@ -27,7 +27,7 @@ void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
     else if (!nav_flag){
         for (i=0;i<msg->data.size();++i){
 
-            if (msg->data[i]!= NULL){
+            if (msg->data[i] == '\0'){
                 //cout << "0,";
                 //nav_new[i] = 0;
                 cnt_new++;
@@ -37,7 +37,7 @@ void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
         int diff = cnt_new - cnt_old;
         cnt_old = cnt_new;
         cnt_new = 0;
-        cout << "diff" << "\n";
+        cout << diff << "\n";
     }
     
 }
