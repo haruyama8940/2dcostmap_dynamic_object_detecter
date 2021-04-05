@@ -8,7 +8,7 @@ void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
 {//callback関数
 
     bool nav_flag=true;
-    int i, n,diff = 0;
+    int i, n = 0;
     static int cnt_old, cnt_new = 0;
     
     cout << msg->data.size() << "\n";
@@ -34,7 +34,7 @@ void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
             }
         }
 
-        diff = cnt_new - cnt_old;
+        int diff = cnt_new - cnt_old;
         cnt_old = cnt_new;
         cnt_new = 0;
         cout << "diff" << "\n";
