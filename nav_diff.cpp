@@ -36,6 +36,7 @@ void nav_callback(const nav_msgs::OccupancyGridUpdateConstPtr& msg)
 
         diff = cnt_new - cnt_old;
         cnt_old = cnt_new;
+        cnt_new = 0;
         cout << "diff" << "\n";
     }
     
