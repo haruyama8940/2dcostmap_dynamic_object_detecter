@@ -16,7 +16,7 @@ void nav_callback(const map_msgs::OccupancyGridUpdateConstPtr& msg)
     if (nav_flag){
         for (i=0;i<msg->data.size();++i){
 
-            if (msg->data[i]!== NULL){
+            if (msg->data[i]!= NULL){
                 cnt_old++;
                 //nav_old[i] = 0;
             }   
