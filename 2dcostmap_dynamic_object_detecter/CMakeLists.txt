@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(2dcostmap_dynamic_object_detecter)
+project(costmap_dynamic_object_detecter)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -19,31 +19,17 @@ find_package(catkin REQUIRED COMPONENTS
 ## boost liblary
 find_package(Boost REQUIRED COMPONENTS system)
 
-add_action_files(FILES Fibonacci.action)
-
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
-
 ## Generate actions in the 'action' folder
 add_action_files(
-    FILES
-    obs_diff.action
+  DIRECTORY 
+    action
+  FILES
+    CostDiff.action
  )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-    DEPENDENCIES
+  DEPENDENCIES
     actionlib_msgs
     std_msgs
   )
