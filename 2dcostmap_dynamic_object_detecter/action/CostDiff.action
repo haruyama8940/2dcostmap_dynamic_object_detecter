@@ -2,7 +2,7 @@
 bool order
 ---
 #result defenition
-bool sequence
+bool observation_results
 ---
 #feedback
-uunsigned int sequence
+uint32 costdiff
