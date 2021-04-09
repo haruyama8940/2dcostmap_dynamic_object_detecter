@@ -2,94 +2,98 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <map_msgs/OccupancyGridUpdate.h>
 #include <actionlib/server/simple_action_server.h>
-#include <2dcostmap_dynamic_object_detecter/obs_diff.h>
+#include <costmap_dynamic_object_detecter/CostDiffAction.h>
 
 using namespace::std;
-class obs_diff
+
+class CostDiff
 {
-    protected:
+protected:
     //ノードハンドル
-    ros::NodeHandle nh_obs;
+    ros::NodeHandle nh_obs_;
+    ros::Subscriber sub_;
     //アクションサーバの宣言
-    acctionlib::SimpleActionServer<ros_tutorials_action::obs_diff> as_;
-    //
-    std::string action_name;
-    //
-    2dcostmap_dynamic_object_detecter::obs_diff feedback;
-    2dcostmap_dynamic_object_detecter::obs_diff result;
+    actionlib::SimpleActionServer<costmap_dynamic_object_detecter::CostDiffAction> as_;
+    
+    std::string action_name_;
+    
+    costmap_dynamic_object_detecter::CostDiffFeedback feedback_;
+    costmap_dynamic_object_detecter::CostDiffResult result_;
 
-    public:
+    bool first_flag_=true;
+    int cnt_old_, cnt_new_ = 0;
+    uint diff_ = 0, diff_old_ = 0, diff_new_ = 0;
 
-    nav_diff(std::string name) :
-        as_(nav_obs, name, boost::bind($obs_diff::executeCB, this, _1),
-            false),
-    action_name_(name)
+public: 
+    CostDiff(std::string name) :
+                              as_(nh_obs_, name, boost::bind(&CostDiff::executeCB, this, _1),false),
+                              action_name_(name),
+                              first_flag_(true),
+                              cnt_new_(0),
+                              diff_(0), diff_old_(0), diff_new_(0)
     {
-    as_.start();
+        sub_ = nh_obs_.subscribe("/move_base/local_costmap/costmap_updates", 1, &CostDiff::CostMapDiffCb, this);
+        as_.start();
     }
-    ~obs_diff(void)
-    {
-    }
-    void CostMapDiffCb(const map_msgs::OccupancyGridUpdateConstPtr& msg)
-    {
-        static bool first_flag=true;
-        static int cnt_old, cnt_new = 0;
-        static uint diff = 0, diff_old = 0, diff_new = 0;
 
-        if (first_flag){
-            for (int i=0;i<msg->data.size();++i){
-                if (msg->data[i] == '\0')
-                    cnt_old++;
+    ~CostDiff(void) {}
+
+    void CostMapDiffCb(const map_msgs::OccupancyGridUpdate& msg)
+    {
+        if (first_flag_){
+            for (int i=0;i<msg.data.size();++i){
+                if (msg.data[i] == '\0')
+                    cnt_old_++;
             }
-        first_flag = false;
+            first_flag_ = false;
         }
-        else if (!first_flag){
-            for (int i=0;i<msg->data.size();++i){
-                if (msg->data[i] == '\0')
-                    cnt_new++;
+        else if (!first_flag_){
+            for (int i=0;i<msg.data.size();++i){
+                if (msg.data[i] == '\0')
+                    cnt_new_++;
             }
-        diff_new = abs(cnt_new - cnt_old);
-        diff = diff_new + diff_old;
-        diff_old = diff_new;
-        cnt_old = cnt_new;
-        cnt_new = 0;
-        cout << diff << "\n";
-     }
-}
-    void executeCB
-    {
-    ros::Rate r(1);
-    bool success = true;
-    ros::Subscriber sub = nh_obs.subscribe("/move_base/local_costmap/costmap_updates", 1, CostMapDiffCb);
+            diff_new_ = abs(cnt_new_ - cnt_old_);
+            diff_ = diff_new_ + diff_old_;
+            diff_old_ = diff_new_;
+            cnt_old_ = cnt_new_;
+            cnt_new_ = 0;
+            cout << diff_ << "\n";
+        }
+    }
 
-        if(success)
-        {
-            result_.sequence=feedback_.sequence;
+    void executeCB(const costmap_dynamic_object_detecter::CostDiffGoalConstPtr &goal)
+    {
+        bool success = false;
+        result_.observation_results = false;
+        ros::Rate loop_rate(0.3);
+
+        first_flag_ = true;
+        cnt_new_ = 0;
+        diff_ = 0, diff_old_ = 0, diff_new_ = 0;
+
+        while (ros::ok){
+            if (diff_ >= 20000){
+                success = true;
+                break;
+            }
+            cout << diff_ << "\n";
+            ros::spinOnce();
+            loop_rate.sleep();
+        }
+
+        if (success){
+            result_.observation_results = true;
             ROS_INFO("%s: Succeeded", action_name_.c_str());
             as_.setSucceeded(result_);
         }
     }
 };
 
-
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "costmap_dynamic_object_detecter");
-    //obs_diffをcost_diffのアクション名で初期化
-    2dcostmap_dynamic_object_detecter obs_diff("cost_diff");
-    ros::spin();
-    /*
-    //ros::NodeHandle nh;
-    //ros::Subscriber sub = nh.subscribe("/move_base/local_costmap/costmap_updates", 1, CostMapDiffCb);
-
-    ros::Rate loop_rate(0.3);
-    while (ros::ok){
-      ros::spinOnce();
-        loop_rate.sleep();
+    // CostDiffをcost_diffのアクション名で初期化
+    CostDiff CostDiff("cost_diff");
     
-    }
-    */    
     return 0;
-    
 }
