@@ -20,9 +20,9 @@ protected:
     costmap_dynamic_object_detecter::CostDiffFeedback feedback_;
     costmap_dynamic_object_detecter::CostDiffResult result_;
 
-    bool first_flag_=true;
-    int cnt_old_, cnt_new_ = 0;
-    uint diff_ = 0, diff_old_ = 0, diff_new_ = 0;
+    bool first_flag_;
+    int cnt_old_, cnt_new_;
+    uint diff_, diff_old_, diff_new_;
 
 public: 
     CostDiff(std::string name) :
