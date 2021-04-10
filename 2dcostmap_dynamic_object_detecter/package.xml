@@ -2,7 +2,7 @@
 <package format="2">
   <name>costmap_dynamic_object_detecter</name>
   <version>0.0.0</version>
-  <description>The 2dcostmap_dynamic_object_detecter package</description>
+  <description>The costmap_dynamic_object_detecter package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
