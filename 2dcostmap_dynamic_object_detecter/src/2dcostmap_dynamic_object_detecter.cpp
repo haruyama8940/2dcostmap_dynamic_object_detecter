@@ -67,30 +67,36 @@ public:
 
     void executeCB(const costmap_dynamic_object_detecter::CostDiffGoalConstPtr &goal)
     {
-        bool success = false;
-        result_.observation_results = false;
+        if (goal->order){
+            bool success = false;
+            result_.observation_results = false;
 
-        first_flag_ = true;
-        ROS_INFO("%sWaiting for variable initialization processing", action_name_.c_str());
-        ros::Duration duration(3.0);
-        duration.sleep();
-        ROS_INFO("%sVariable initialization completed", action_name_.c_str());
-
-        while (ros::ok){
-            cout << diff_ << "\n";
-            if (diff_ >= 20000){
-                success = true;
-                break;
-            }
-            ros::Duration duration(1.0);
+            first_flag_ = true;
+            ROS_INFO("%sWaiting for variable initialization processing", action_name_.c_str());
+            ros::Duration duration(4.0);
             duration.sleep();
-        }
+            ROS_INFO("%sVariable initialization completed", action_name_.c_str());
 
-        if (success){
-            result_.observation_results = true;
-            ROS_INFO("%s: Succeeded", action_name_.c_str());
-            as_.setSucceeded(result_);
-        }
+            while (ros::ok){
+                cout << diff_ << "\n";
+                if (diff_ >= 20000){
+                    success = true;
+                    break;
+                }
+                ros::Duration duration(1.0);
+                duration.sleep();
+            }
+
+            if (success){
+                result_.observation_results = true;
+                ROS_INFO("%s: Succeeded", action_name_.c_str());
+                ros::Duration duration(1.0);
+                duration.sleep();
+                as_.setSucceeded(result_);
+            }
+        }  
+        else if (!goal->order)
+            ros::shutdown();
     }
 };
 
