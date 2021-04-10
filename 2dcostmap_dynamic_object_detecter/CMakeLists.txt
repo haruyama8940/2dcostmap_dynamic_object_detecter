@@ -67,13 +67,13 @@ include_directories(
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 
-add_library(2dcostmap_dynamic_object_detecter 
+add_executable(costmap_dynamic_object_detecter
   src/2dcostmap_dynamic_object_detecter.cpp
 )
-add_dependencies(2dcostmap_dynamic_object_detecter 
+add_dependencies(costmap_dynamic_object_detecter 
   ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp
 )
-target_link_libraries(2dcostmap_dynamic_object_detecter
+target_link_libraries(costmap_dynamic_object_detecter
   ${catkin_LIBRARIES}
  )
 
