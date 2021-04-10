@@ -9,10 +9,8 @@ using namespace::std;
 class CostDiff
 {
 protected:
-    //ノードハンドル
     ros::NodeHandle nh_obs_;
     ros::Subscriber sub_;
-    //アクションサーバの宣言
     actionlib::SimpleActionServer<costmap_dynamic_object_detecter::CostDiffAction> as_;
     
     std::string action_name_;
@@ -36,11 +34,18 @@ public:
         as_.start();
     }
 
-    ~CostDiff(void) {}
+    ~CostDiff() {}
+
+    void VariableInitialization()
+    {
+        cnt_old_ = 0, cnt_new_ = 0;
+        diff_ = 0, diff_old_ = 0, diff_new_ = 0;
+    }
 
     void CostMapDiffCb(const map_msgs::OccupancyGridUpdate& msg)
     {
         if (first_flag_){
+            VariableInitialization();
             for (int i=0;i<msg.data.size();++i){
                 if (msg.data[i] == '\0')
                     cnt_old_++;
@@ -57,7 +62,6 @@ public:
             diff_old_ = diff_new_;
             cnt_old_ = cnt_new_;
             cnt_new_ = 0;
-            cout << diff_ << "\n";
         }
     }
 
@@ -65,20 +69,21 @@ public:
     {
         bool success = false;
         result_.observation_results = false;
-        ros::Rate loop_rate(0.3);
 
         first_flag_ = true;
-        cnt_new_ = 0;
-        diff_ = 0, diff_old_ = 0, diff_new_ = 0;
+        ROS_INFO("%sWaiting for variable initialization processing", action_name_.c_str());
+        ros::Duration duration(3.0);
+        duration.sleep();
+        ROS_INFO("%sVariable initialization completed", action_name_.c_str());
 
         while (ros::ok){
+            cout << diff_ << "\n";
             if (diff_ >= 20000){
                 success = true;
                 break;
             }
-            cout << diff_ << "\n";
-            ros::spinOnce();
-            loop_rate.sleep();
+            ros::Duration duration(1.0);
+            duration.sleep();
         }
 
         if (success){
@@ -92,8 +97,13 @@ public:
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "costmap_dynamic_object_detecter");
-    // CostDiffをcost_diffのアクション名で初期化
+
     CostDiff CostDiff("cost_diff");
-    
+
+    ros::Rate loop_rate(0.3);
+    while (ros::ok){
+        ros::spinOnce();
+        loop_rate.sleep();
+    }    
     return 0;
 }
