@@ -77,7 +77,7 @@ public:
             duration.sleep();
             ROS_INFO("%sVariable initialization completed", action_name_.c_str());
 
-            while (ros::ok){
+            while (ros::ok()){
                 cout << diff_ << "\n";
                 if (diff_ >= 20000){
                     success = true;
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
     CostDiff CostDiff("cost_diff");
 
     ros::Rate loop_rate(0.3);
-    while (ros::ok){
+    while (ros::ok()){
         ros::spinOnce();
         loop_rate.sleep();
     }    
